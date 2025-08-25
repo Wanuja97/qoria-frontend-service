@@ -1,4 +1,4 @@
-# Next.js Application Setup
+# Next.js Application Setup 
 
 A Next.js frontend application for the dashboard interface.
 
