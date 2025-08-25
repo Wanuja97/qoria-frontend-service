@@ -9,23 +9,23 @@ export const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
+  const [isWaiting, setIsWaiting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    console.log('Form submitted with:', { email, password: '***' });
+
+    if (isWaiting) return;
+    setIsWaiting(true);
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       const response = await axios.post(`${apiUrl}/auth/login`, {
         email,
-        password
+        password,
       });
 
-      console.log('API Response:', response);
       const data = response.data;
-      
-      // Save to localStorage
+
       if (typeof window !== 'undefined') {
         localStorage.setItem('authToken', data.data.token);
         localStorage.setItem('authUser', JSON.stringify(data.data.user));
@@ -33,38 +33,18 @@ export const LoginForm = () => {
       }
 
       if (response.status === 200 && data?.data?.token) {
-        console.log('Login successful');
-        
-        toast.success('Login successful!', {
-          position: "top-right",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
-
+        toast.success('Login successful!', { autoClose: 1000 });
         router.push('/dashboard/overview');
-        
       } else if (response.status === 401) {
-        console.log('Login failed: Unauthorized');
-        toast.error('Invalid credentials. Please try again.', {
-          position: "top-right",
-          autoClose: 4000,
-        });
+        toast.error('Invalid credentials. Please try again.', { autoClose: 4000 });
       } else {
-       
-        toast.error('Login failed. Please try again.', {
-          position: "top-right",
-          autoClose: 4000,
-        });
+        toast.error('Login failed. Please try again.', { autoClose: 4000 });
       }
     } catch (error) {
       console.error('Login error:', error);
-      toast.error('Invalid credentials or network issue. Please try again', {
-        position: "top-right",
-        autoClose: 4000,
-      });
+      toast.error('Invalid credentials or network issue. Please try again', { autoClose: 4000 });
+    } finally {
+      setIsWaiting(false);
     }
   };
 
@@ -102,11 +82,11 @@ export const LoginForm = () => {
 
       <button
         type="submit"
+        disabled={isWaiting}
         className="w-full bg-[#2c3892] hover:bg-[#242d75] disabled:bg-[#9aa0c7] disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-md transition-colors duration-200"
       >
-        Login
+        {isWaiting ? "Logging in..." : "Login"}
       </button>
-
     </form>
   );
 };

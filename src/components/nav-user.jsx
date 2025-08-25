@@ -24,6 +24,7 @@ export function NavUser({ user }) {
 
   const handleLogout = () => {
     localStorage.removeItem('authToken');
+    localStorage.removeItem('authUser');
     localStorage.removeItem('isAuthenticated');
     
     router.push('/');

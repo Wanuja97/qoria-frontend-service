@@ -88,8 +88,9 @@ export default function OverviewPage() {
 
   const regionChartData = top_regions.slice(0, 8).map(region => ({
     name: region.region,
-    revenue: region.total_revenue / 1000000,
-    country: region.country
+    revenue: Math.round(region.total_revenue / 1000000 * 10) / 10, // Convert to millions
+    country: region.country,
+    fullRevenue: region.total_revenue
   }));
 
   const categoryData = top_products.reduce((acc, product) => {
@@ -155,7 +156,7 @@ export default function OverviewPage() {
           <CardContent>
             <div className="text-2xl font-bold">{formatNumber(summary.total_products)}</div>
             <p className="text-xs opacity-90 mt-1">
-              {formatNumber(summary.total_quantity)} total sold
+              {summary.total_quantity} Total products
             </p>
           </CardContent>
         </Card>
@@ -181,7 +182,7 @@ export default function OverviewPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <TrendingUp className="h-5 w-5" />
-              Sales Trend (Last 6 Months)
+              Sales Trend (Last Active 6 Months)
             </CardTitle>
             <CardDescription>Monthly sales performance in millions</CardDescription>
           </CardHeader>
@@ -207,27 +208,56 @@ export default function OverviewPage() {
         </Card>
 
         {/* Top Regions Chart */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Top Performing Regions</CardTitle>
-            <CardDescription>Revenue by region (millions)</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={regionChartData} layout="horizontal">
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" />
-                  <YAxis dataKey="name" type="category" width={100} />
-                  <Tooltip 
-                    formatter={(value) => [`$${value.toFixed(1)}M`, 'Revenue']}
-                  />
-                  <Bar dataKey="revenue" fill="#3b82f6" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Top Regions Chart */}
+<Card>
+  <CardHeader>
+    <CardTitle>Top Performing Regions</CardTitle>
+    <CardDescription>Revenue by region (millions)</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <div className="h-80">
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart 
+          data={regionChartData}
+          margin={{
+            top: 20,
+            right: 30,
+            left: 20,
+            bottom: 10,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis 
+            dataKey="name" 
+            angle={-45}
+            textAnchor="end"
+            height={80}
+            interval={0}
+            fontSize={12}
+          />
+          <YAxis 
+            label={{ value: 'Revenue(M $)', angle: -90, position: 'insideLeft' }}
+            domain={['dataMin - 5', 'dataMax + 5']}
+          />
+          <Tooltip 
+            formatter={(value) => [`$${value.toFixed(1)}M`, 'Revenue']}
+            labelFormatter={(label) => {
+              const region = regionChartData.find(r => r.name === label);
+              return region ? `${label}, ${region.country}` : label;
+            }}
+          />
+          <Bar 
+            dataKey="revenue" 
+            fill="#3b82f6" 
+            stroke="#1e40af"
+            strokeWidth={1}
+            radius={[4, 4, 0, 0]}
+          />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  </CardContent>
+</Card>
       </div>
 
       {/* Category Distribution and Top Products */}
@@ -236,7 +266,7 @@ export default function OverviewPage() {
         <Card>
           <CardHeader>
             <CardTitle>Revenue by Category</CardTitle>
-            <CardDescription>Distribution across product categories</CardDescription>
+            <CardDescription>Distribution across Top 30 product categories</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="h-64">
@@ -432,7 +462,8 @@ export default function OverviewPage() {
             <div className="flex justify-between border-t pt-3">
               <span className="text-gray-600">Active Period:</span>
               <span className="font-medium">
-                {Math.round((new Date(summary.latest_transaction) - new Date(summary.earliest_transaction)) / (1000 * 60 * 60 * 24 * 365 * 100)) / 100} years
+               {new Date(summary.earliest_transaction).toISOString().split("T")[0]} - {new Date(summary.latest_transaction).toISOString().split("T")[0]}
+
               </span>
             </div>
           </CardContent>
@@ -452,7 +483,7 @@ export default function OverviewPage() {
             <div className="flex justify-between">
               <span className="text-gray-600">Items per Order:</span>
               <span className="font-medium">
-                {(summary.total_quantity / summary.total_transactions).toFixed(1)}
+                {(summary.grand_total_quantity / summary.total_transactions).toFixed(1)}
               </span>
             </div>
             <div className="flex justify-between border-t pt-3">

@@ -78,7 +78,7 @@ export function AppSidebar(props) {
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
       setLoggedInUser((prev) => ({
-        ...prev,                // keep avatar + role from default
+        ...prev,             
         name: parsedUser.name || prev.name,
         email: parsedUser.email || prev.email,
       }));
