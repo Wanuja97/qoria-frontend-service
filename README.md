@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Next.js Application Setup
 
-## Getting Started 
+A Next.js frontend application for the dashboard interface.
 
-First, run the development server:
+## Prerequisites
+
+- Node.js 
+- npm package manager
+
+## Quick Start
+
+### Step 1: Clone the Application
+```bash
+git clone [your-repository-url]
+cd [project-directory]
+```
+
+### Step 2: Environment Configuration
+Create a `.env` file in the root directory and add the following variable:
+
+```env
+NEXT_PUBLIC_API_URL
+```
+**Example:**
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8080/api/v1
+```
+
+### Step 3: Install Dependencies
+```bash
+npm install
+```
+
+### Step 4: Development Mode
+To run the application in development mode:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The application will be available at `http://localhost:3000`
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### Step 5: Production Build and Run
+To build and run the application for production:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# Build the application
+npm run build
 
-## Learn More
+# Start the production server
+npm run start
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Environment Variables
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `NEXT_PUBLIC_API_URL`: Backend API base URL
+  - Development: `http://localhost:8080/api/v1`
+  - Production: Update with your production API URL
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Available Scripts
 
-## Deploy on Vercel
+- `npm run dev` - Starts development server
+- `npm run build` - Creates production build
+- `npm run start` - Starts production server
+- `npm run lint` - Runs ESLint
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Support
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+For additional support or questions, please reach out to me through `wanuja18@gmail.com`.
